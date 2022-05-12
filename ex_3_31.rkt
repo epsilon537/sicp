@@ -179,65 +179,67 @@
 
 (propagate)
 
-;A: All the after-delay invokations are inside the action procedures. If the action procedure would not get called right away, the output ports' set-signal!s would never get scheduled. The initial input signal values would not propagate to the output. The output would stay at zero.
-
-With original code (with initialization call):
-(D,E,S and C are as in half-adder diagram)
-
-in1=0, in2=0,D=0,E=0,S=0,C=0
-agenda:
-2: E->1
-3: C->0, S->0
-5: D->0
-
-(set-signal! in1 1)
-
-in1=1,in2=2,D=0,S=0,C=0
-agenda:
-2: E->1
-3: C->0, S->0
-5: D->0, D->1
-
-(propagate)
-in1=1,in2=0,D=0,E=1,S=0,C=0
-agenda:
-3: C->0, S->0
-5: D->0, D->1, S->0
-
-in1=1,in2=0,D=1,E=1,S=0,C=0
-agenda:
-5: D->0,D->1,S->0
-
-in1=1,in2=0,D=1,E=1,S=0,C=0
-agenda:
-8: S->1
-
-in1=1,in2=0,D=1,E=1,S=1,C=0
-agenda:
-/
-
-With modified code (without initializer call):
-
-in1=0,in2=0,D=0,E=0,S=0,C=0
-agenda: /
-
-(set-signal! in1 1)
-
-in1=1,in2=0,D=0,E=0,S=0,C=0
-agenda:
-3: C->0
-5: D->1
-
-(propagate)
-
-in1=1,in2=0,D=1,E=0,S=0,C=0
-agenda:
-5: D->1
-
-in1=1,in2=0,D=1,E=0,S=0,C=0
-agenda:
-8: S->0
-
-in1=1,in2=0,D=1,E=0,S=0,C=0
-agenda:/
+;A: All the after-delay invokations are inside the action procedures. If the action procedure would not get called right away, the output
+;ports' set-signal!s would never get scheduled. The initial input signal values would not propagate to the output. The output would stay
+;at zero.
+;
+;With original code (with initialization call):
+;(D,E,S and C are as in half-adder diagram)
+;
+;in1=0, in2=0,D=0,E=0,S=0,C=0
+;agenda:
+;2: E->1
+;3: C->0, S->0
+;5: D->0
+;
+;(set-signal! in1 1)
+;
+;in1=1,in2=2,D=0,S=0,C=0
+;agenda:
+;2: E->1
+;3: C->0, S->0
+;5: D->0, D->1
+;
+;(propagate)
+;in1=1,in2=0,D=0,E=1,S=0,C=0
+;agenda:
+;3: C->0, S->0
+;5: D->0, D->1, S->0
+;
+;in1=1,in2=0,D=1,E=1,S=0,C=0
+;agenda:
+;5: D->0,D->1,S->0
+;
+;in1=1,in2=0,D=1,E=1,S=0,C=0
+;agenda:
+;8: S->1
+;
+;in1=1,in2=0,D=1,E=1,S=1,C=0
+;agenda:
+;/
+;
+;With modified code (without initializer call):
+;
+;in1=0,in2=0,D=0,E=0,S=0,C=0
+;agenda: /
+;
+;(set-signal! in1 1)
+;
+;in1=1,in2=0,D=0,E=0,S=0,C=0
+;agenda:
+;3: C->0
+;5: D->1
+;
+;(propagate)
+;
+;in1=1,in2=0,D=1,E=0,S=0,C=0
+;agenda:
+;5: D->1
+;
+;in1=1,in2=0,D=1,E=0,S=0,C=0
+;agenda:
+;8: S->0
+;
+;in1=1,in2=0,D=1,E=0,S=0,C=0
+;agenda:/
 
