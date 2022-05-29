@@ -1,0 +1,69 @@
+;Exercise 3.43: Suppose that the balances in three accounts start out as $10, $20, and
+;$30, and that multiple processes run, exchanging the balances in the accounts. Argue that
+;if the processes are run sequentially, after any number of concurrent exchanges, the
+;account balances should be $10, $20, and $30 in some order.
+
+The account balances are a set: ($10, $20, $30)
+The exchange operation just swaps two positions in the set. It does not introduce any new values.
+So, multiple exchange operations executed sequentially, result in multiple position swaps. No new values are introduced.
+
+;Draw a timing diagram like
+;the one in Figure 3.29 to show how this condition can be violated if the exchanges are
+;implemented using the first version of the account-exchange program in this section.
+
+Acc.             Acc.             Acc.
+A                B                C
+$10              $20              $25
+    <-Access         <-Access
+      Access->         Access->
+      diff=10          diff=5
+                 $25 <-Deposit
+$20 <-Deposit          Withdraw-> $20
+      Withdraw-> $15
+ 
+;On
+;the other hand, argue that even with this exchange program, the sum of the balances in
+;the accounts will be preserved.
+
+Exchange decrements one account with a certain amount ands increments the other account with that same amount. In other words, the net amount that exchange adds to the system as whole is 0. The increment (deposit) and decrement (withdraw) operations are serialized, so they work correctly. Exchange redistributes amounts between two accounts. This redistribution doesn't necessarily result in an exchange, however.
+
+Exchange1 computes an amount x1, withdraws that from one account and adds it to an other.
+Exchange2 computes an amount x2, withdraws that from one account and adds it to an other.
+
+Sum of the accounts before exchanges is: A+B+C
+Sum of the accounts after completing exchange1 is: A+B+C+x1-x1 = A+B+C
+It doesn't matter if x1 was added to A and subtracted from B. The sum lumps it all together.
+
+Sum of the accounts after completing exchange2 is: A+B+C+x2-x2 = A+B+C
+It doesn't matter if x1 was added to A and subtracted from B. The sum lumps it all together.
+
+Sum of the accounts after completing concurrent execution of exchange1 and exchange2 is: A+B+C+x2-x2+x1-x1 = A+B+C
+It doesn't matter in which order the subtractions and additions happen. Addition is commutative. The sum lumps it all together.
+
+;Draw a timing diagram to show how even this condition
+;would be violated if we did not serialize the transactions on individual accounts.
+
+In this case, withdraw and deposit are not atomic. They are broken up into their read-modify-write steps which may interleave each other:
+
+Acc.               Acc.             Acc.
+A                  B                C
+$10                $20              $25
+    <-Access          <-Access
+      Access->          Access->
+      diff=10           diff=5
+
+      Deposit:          
+$10 <-read
+      add 10
+$20 <-write
+      Withdraw:         Deposit:
+      read     -> $20 <-read
+      sub 10            add 5
+      write    -> $10
+                  $25 <-write
+                        Withdraw:
+                        read      -> $25
+                        sub 5
+                        write     -> $20
+
+=> A+B+C=65
