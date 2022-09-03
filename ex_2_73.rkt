@@ -47,7 +47,7 @@
 ;    Why can’t we assimilate the predicates number? and variable? into the data-directed dispatch?
 
 ;    Derivation of an expression is implemented in terms of derivations of it sub-expressions. This eventually has to reduce to primitive numbers and variables (instead of user-defined
-;    number or variable types that follow the operator-operand expression syntax). The implementation of the various operation derivation method count on that.
+;    number or variable types that follow the operator-operand expression syntax). The implementation of the various operation derivation methods count on that.
 ;    There's also not much point in doing so since the behavior of derivation of numbers and variables is known/fixed, and doesn't need to be pluggable/extensible.
 ;    If we do represent numbers as numbers and variables as variables, these don't follow the general expression syntax. The operator and operands
 ;    accessors would fail on them, so they have to be special-cased.
